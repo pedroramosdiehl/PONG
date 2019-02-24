@@ -28,9 +28,9 @@ clock = pygame.time.Clock()
 
 bar = [175,175]
 
-velocity = 2
+acceleration = 3
 ball = [400,250]
-speed = [random.choice([-velocity,velocity]),random.choice([-velocity,velocity])]
+velocity = [random.choice([-acceleration,acceleration]),random.choice([-acceleration,acceleration])]
 
 life = [3,3]
 
@@ -65,21 +65,25 @@ def displayLife():
 
 def change_direction(direction):
     global ball
-    global speed
+    global velocity
     if direction == 1:
-        life[0] -= 1
-        ball = [400,250]
-        speed = [random.choice([-velocity,velocity]),random.choice([-velocity,velocity])]
+        if ball[0] <= 20 and ball[1] >= bar[0] and ball[1] <= bar[0]+150:
+            velocity = [ acceleration, random.choice([-acceleration,acceleration]) ] 
+        else:
+            life[0] -= 1
+            ball = [400,250]
+            velocity = [random.choice([-acceleration,acceleration]),random.choice([-acceleration,acceleration])]
     elif direction == 2:
-        speed[0] = random.choice([-velocity,velocity])
-        speed[1] = velocity
+        velocity[1] = acceleration
     elif direction == 3:
-        life[1] -= 1
-        ball = [400,250]
-        speed = [random.choice([-velocity,velocity]),random.choice([-velocity,velocity])]
+        if ball[0] >= 780 and ball[1] >= bar[1] and ball[1] <= bar[1]+150:
+            velocity = [ -acceleration, random.choice([-acceleration,acceleration]) ] 
+        else:
+            life[1] -= 1
+            ball = [400,250]
+            velocity = [random.choice([-acceleration,acceleration]),random.choice([-acceleration,acceleration])]
     elif direction == 4:
-        speed[0] = random.choice([-velocity,velocity])
-        speed[1] = -velocity
+        velocity[1] = -acceleration
 
 def colision_detect():
     if ball[0] <= 10 :
@@ -96,8 +100,8 @@ def move_ball():
     global last_time
     global current_time
     if (current_time - last_time > 10) and colision_detect():
-        ball[0] += speed[0]
-        ball[1] += speed[1]
+        ball[0] += velocity[0]
+        ball[1] += velocity[1]
         last_time = current_time
 
 # -------- Main Program Loop -----------
@@ -109,11 +113,16 @@ while carryOn:
     pygame.draw.line(screen, WHITE, [400, 0], [400, 500], 3)
 
     # BAR 1
+    bar[0] = ball[1] - 75
     pygame.draw.rect(screen, RED, (0,bar[0],10,150) ,2)
+    # print("RED:",bar[0],bar[0] + 150)
 
     # BAR 2
     pygame.draw.rect(screen, GREEN, (790,bar[1],10,150) ,2)
-                                    #X , Y , LARGURA , ALTURA (descendo) 
+    #X , Y , LARGURA , ALTURA (descendo) 
+    print("GRENN:",bar[1],bar[1] + 150)
+    print("BALL:",ball[0],ball[1])
+
     # BALL
     pygame.draw.circle(screen, WHITE, ball , 10)
 
