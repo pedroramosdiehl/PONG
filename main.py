@@ -2,6 +2,10 @@
 import pygame
 import random
 
+from neural import neural
+
+print(neural.firstLayer)
+
 heart = pygame.image.load('1heart.png')
 playerOne = pygame.image.load('playerOneWins.png')
 playerTwo = pygame.image.load('playerTwoWins.png')
@@ -68,6 +72,7 @@ def displayLife():
 def change_direction(direction):
     global ball
     global velocity
+    global acceleration
     if direction == 1:
         if ball[0] <= 20 and ball[1] >= bar[0] and ball[1] <= bar[0]+100:
             velocity = [ acceleration, random.choice([-acceleration,acceleration]) ] 
