@@ -39,6 +39,8 @@ current_time = pygame.time.get_ticks()
 
 moveAUp = False
 moveADown = False
+moveBUp = False
+moveBDown = False
 
 def displayLife():
     global carryOn
@@ -67,18 +69,20 @@ def change_direction(direction):
     global ball
     global velocity
     if direction == 1:
-        if ball[0] <= 20 and ball[1] >= bar[0] and ball[1] <= bar[0]+150:
+        if ball[0] <= 20 and ball[1] >= bar[0] and ball[1] <= bar[0]+100:
             velocity = [ acceleration, random.choice([-acceleration,acceleration]) ] 
         else:
+            acceleration = 3
             life[0] -= 1
             ball = [400,250]
             velocity = [random.choice([-acceleration,acceleration]),random.choice([-acceleration,acceleration])]
     elif direction == 2:
         velocity[1] = acceleration
     elif direction == 3:
-        if ball[0] >= 780 and ball[1] >= bar[1] and ball[1] <= bar[1]+150:
+        if ball[0] >= 780 and ball[1] >= bar[1] and ball[1] <= bar[1]+100:
             velocity = [ -acceleration, random.choice([-acceleration,acceleration]) ] 
         else:
+            acceleration = 3
             life[1] -= 1
             ball = [400,250]
             velocity = [random.choice([-acceleration,acceleration]),random.choice([-acceleration,acceleration])]
@@ -99,6 +103,7 @@ def colision_detect():
 def move_ball():
     global last_time
     global current_time
+    global acceleration
     if (current_time - last_time > 10) and colision_detect():
         ball[0] += velocity[0]
         ball[1] += velocity[1]
@@ -113,15 +118,11 @@ while carryOn:
     pygame.draw.line(screen, WHITE, [400, 0], [400, 500], 3)
 
     # BAR 1
-    bar[0] = ball[1] - 75
-    pygame.draw.rect(screen, RED, (0,bar[0],10,150) ,2)
-    # print("RED:",bar[0],bar[0] + 150)
+    pygame.draw.rect(screen, RED, (0,bar[0],10,100) ,2)
 
     # BAR 2
-    pygame.draw.rect(screen, GREEN, (790,bar[1],10,150) ,2)
+    pygame.draw.rect(screen, GREEN, (790,bar[1],10,100) ,2)
     #X , Y , LARGURA , ALTURA (descendo) 
-    print("GRENN:",bar[1],bar[1] + 150)
-    print("BALL:",ball[0],ball[1])
 
     # BALL
     pygame.draw.circle(screen, WHITE, ball , 10)
@@ -140,19 +141,31 @@ while carryOn:
 
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_UP: 
-            moveAUp = True   
+            moveBUp = True   
         if event.key == pygame.K_DOWN: 
+            moveBDown = True
+        if event.key == pygame.K_KP8: 
+            moveAUp = True   
+        if event.key == pygame.K_KP5: 
             moveADown = True
     elif event.type == pygame.KEYUP:
         if event.key == pygame.K_UP:
-            moveAUp = False 
+            moveBUp = False 
         if event.key == pygame.K_DOWN:
+            moveBDown = False
+        if event.key == pygame.K_KP8: 
+            moveAUp = False  
+        if event.key == pygame.K_KP5: 
             moveADown = False
 
     if moveAUp and bar[1] > 0:
         bar[1] -= 5
-    if moveADown and bar[1] < size[1]-150:
+    if moveADown and bar[1] < size[1]-100:
         bar[1] += 5
+    if moveBUp and bar[0] > 0:
+        bar[0] -= 5
+    if moveBDown and bar[0] < size[1]-100:
+        bar[0] += 5
 
     # print(bar[1])
     clock.tick(60)
